@@ -9,7 +9,7 @@ export class GetAdsHousingService {
   }
 
   async getAdsHousing() {
-    const JSON_URL = this.configService.get<string>('data.url');
+    const JSON_URL = this.configService.get<string>('api.url');
     return this.httpService.get(JSON_URL);
   }
 }
