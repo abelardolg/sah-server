@@ -16,10 +16,7 @@ export class GetAdsHousingController {
   @Get('getSomeAdsHousing')
   async getAdsHousing(@Query('iniItem', ValidPage) iniItem: number,
                       @Query('itemCount', ValidPage) itemCount: number) {
-    const results = await (await this.getAdsHousingUseCase.getAdsHousing(iniItem, itemCount)).toPromise();
+    return await (await this.getAdsHousingUseCase.getAdsHousing(iniItem, itemCount)).toPromise();
 
-    return {
-      data: results,
-    };
   }
 }
