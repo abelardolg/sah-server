@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Query} from '@nestjs/common';
 
 import { GetAdsHousingUseCase } from '../Domain/useCases/getAdsHousing.usecase';
 
@@ -13,9 +13,13 @@ export class GetAdsHousingController {
     return await this.getAdsHousingUseCase.getAllAdsHousing();
   }
 
-  @Get(':fromPage')
-  async getAdsHousing(@Param('fromPage', ValidPage) fromPage: number) {
-    return await this.getAdsHousingUseCase.getAdsHousing(fromPage);
+  @Get('getSomeAdsHousing')
+  async getAdsHousing(@Query('iniItem', ValidPage) iniItem: number,
+                      @Query('itemCount', ValidPage) itemCount: number) {
+    const results = await (await this.getAdsHousingUseCase.getAdsHousing(iniItem, itemCount)).toPromise();
+
+    return {
+      data: results,
+    };
   }
 }
-
