@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Param, ParseIntPipe, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 
 import { GetAdsHousingUseCase } from '../Domain/useCases/getAdsHousing.usecase';
 
