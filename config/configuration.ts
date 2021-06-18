@@ -1,6 +1,9 @@
 export default () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
-  data: {
+  api: {
     url: process.env.JSON_URL
+  },
+  data: {
+    resultsPerPage: 10
   }
 })
