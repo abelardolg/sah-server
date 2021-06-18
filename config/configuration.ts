@@ -3,7 +3,4 @@ export default () => ({
   api: {
     url: process.env.JSON_URL
   },
-  data: {
-    resultsPerPage: 10
-  }
 })
