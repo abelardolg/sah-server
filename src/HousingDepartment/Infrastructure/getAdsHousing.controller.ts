@@ -1,10 +1,12 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
 
 import { GetAdsHousingUseCase } from '../Domain/useCases/getAdsHousing.usecase';
 
 import { ValidPage } from '../Domain/pipes/ValidPage.pipe';
+import { ValidationGuard } from '../Application/guards/validation.guard';
 
 @Controller()
+@UseGuards(ValidationGuard)
 export class GetAdsHousingController {
   constructor(private readonly getAdsHousingUseCase: GetAdsHousingUseCase){}
 
