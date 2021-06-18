@@ -49,12 +49,17 @@ export class GetAdsHousingUseCase {
   }
 
   async getAllAdsHousing(): Promise<Observable<Respuesta>> {
-      const response = await this.getAdsHousingService.getAdsHousing();
+    let numAdsHousing: number;
+
+    const response = await this.getAdsHousingService.getAdsHousing();
     try {
       return response
         .pipe(
           catchError( (error:any) => {
             return throwError(new DomainError(error));
+          }),
+          tap((response) => {
+            numAdsHousing = response.data.length;
           }),
           mergeMap(response => response.data),
           map(({ Link, City, Address, Images }) =>
@@ -62,7 +67,7 @@ export class GetAdsHousingUseCase {
           ),
           toArray(),
           map((collection:any[]) =>
-            new Respuesta(collection, numAdsHousing, (iniItem > 0), (iniItem+itemCount) < numAdsHousing),
+            new Respuesta(collection, numAdsHousing, true, true),
           ),
         );
     } catch(error) {
