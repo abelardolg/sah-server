@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
@@ -15,10 +14,8 @@ import { GetAdsHousingService } from '../services/getAdsHousing.service';
 @Injectable()
 export class GetAdsHousingUseCase {
 
-  constructor(private getAdsHousingService: GetAdsHousingService,
-              private configService: ConfigService){
+  constructor(private getAdsHousingService: GetAdsHousingService){
     this.getAdsHousingService = getAdsHousingService;
-    this.configService = configService;
   }
 
   async getAdsHousing(iniItem: number, itemCount: number = 0): Promise<Observable<Respuesta>> {
