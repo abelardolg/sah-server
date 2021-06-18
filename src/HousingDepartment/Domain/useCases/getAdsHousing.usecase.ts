@@ -2,13 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { Observable, throwError } from 'rxjs';
-import { catchError, map, mergeMap, toArray } from 'rxjs/operators';
+import { catchError, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
+
+import { DomainError } from '../exceptions/DomainError.exception';
+
+import { AdHousing } from '../models/AdHousing.class';
+import { Respuesta } from '../models/Respuesta.class';
 
 import { GetAdsHousingService } from '../services/getAdsHousing.service';
 
-import { AdHousing } from '../models/AdHousing.class';
-
-import { DomainError } from '../exceptions/DomainError.exception';
 
 @Injectable()
 export class GetAdsHousingUseCase {
@@ -19,17 +21,26 @@ export class GetAdsHousingUseCase {
     this.configService = configService;
   }
 
-  async getAdsHousing(fromPage: number): Promise<Observable<AdHousing[]>> {
+  async getAdsHousing(iniItem: number, itemCount: number = 0): Promise<Observable<Respuesta>> {
+    let numAdsHousing: number;
+
     try {
       const response = await this.getAdsHousingService.getAdsHousing();
 
       return response
         .pipe(
-          mergeMap(response => response.data.slice(fromPage, fromPage + this.getResultsPerPage())),
+          tap((response) => {
+            numAdsHousing = response.data.length;
+          }),
+          mergeMap(response => response.data.slice(iniItem, iniItem+itemCount)),
           map(({ Link, City, Address, Images }) =>
-            new AdHousing(Address, Link, Address, City, Images[0])
+              new AdHousing(Address, Link, Address, City, Images[0]),
           ),
+          take(itemCount),
           toArray(),
+          map((collection:any[]) =>
+            new Respuesta(collection, numAdsHousing, (iniItem > 0), (iniItem+itemCount) < numAdsHousing),
+          ),
         );
     } catch(error) {
       throw new DomainError(error);
@@ -37,10 +48,9 @@ export class GetAdsHousingUseCase {
 
   }
 
-  async getAllAdsHousing(): Promise<Observable<AdHousing[]>> {
-    // try {
+  async getAllAdsHousing(): Promise<Observable<Respuesta>> {
       const response = await this.getAdsHousingService.getAdsHousing();
-
+    try {
       return response
         .pipe(
           catchError( (error:any) => {
@@ -51,13 +61,13 @@ export class GetAdsHousingUseCase {
             new AdHousing(Address, Link, Address, City, Images[0])
           ),
           toArray(),
-
+          map((collection:any[]) =>
+            new Respuesta(collection, numAdsHousing, (iniItem > 0), (iniItem+itemCount) < numAdsHousing),
+          ),
         );
-
-  }
-
-  getResultsPerPage(): number {
-    return parseInt(this.configService.get<string>('data.resultsPerPage'));
+    } catch(error) {
+      throw new DomainError(error);
+    }
   }
 
 }
