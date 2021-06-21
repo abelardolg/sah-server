@@ -22,7 +22,7 @@ export class GetAdsHousingUseCase {
     let numAdsHousing: number;
 
     try {
-      const response = await this.getAdsHousingService.getAdsHousing();
+      const response = await this.getData();
 
       return response
         .pipe(
@@ -48,7 +48,7 @@ export class GetAdsHousingUseCase {
   async getAllAdsHousing(): Promise<Observable<Respuesta>> {
     let numAdsHousing: number;
 
-    const response = await this.getAdsHousingService.getAdsHousing();
+    const response = await this.getData();
     try {
       return response
         .pipe(
@@ -70,6 +70,10 @@ export class GetAdsHousingUseCase {
     } catch(error) {
       throw new DomainError(error);
     }
+  }
+
+  private async getData() {
+    return await this.getAdsHousingService.getAdsHousing();
   }
 
 }
