@@ -7,7 +7,7 @@ export class ValidPage implements PipeTransform<number, number> {
       if (value < 0) return 0;
       return parseInt(value);
     } else {
-      return false;
+      return -1;
     }
   }
 }
