@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
 
+import {v4 as uuidv4} from 'uuid';
+
 import { DomainError } from '../exceptions/DomainError.exception';
 
 import { AdHousing } from '../models/AdHousing.class';
@@ -31,7 +33,7 @@ export class GetAdsHousingUseCase {
           }),
           mergeMap(response => response.data.slice(iniItem, iniItem+itemCount)),
           map(({ Link, City, Address, Images }) =>
-              new AdHousing(Address, Link, Address, City, Images[0]),
+              new AdHousing(uuidv4(), Address, Link, Address, City, Images[0]),
           ),
           take(itemCount),
           toArray(),
@@ -60,7 +62,7 @@ export class GetAdsHousingUseCase {
           }),
           mergeMap(response => response.data),
           map(({ Link, City, Address, Images }) =>
-            new AdHousing(Address, Link, Address, City, Images[0])
+            new AdHousing(uuidv4(), Address, Link, Address, City, Images[0])
           ),
           toArray(),
           map((collection:any[]) =>
